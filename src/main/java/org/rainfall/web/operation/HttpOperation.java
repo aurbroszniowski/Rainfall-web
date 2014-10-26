@@ -29,7 +29,6 @@ import org.rainfall.AssertionEvaluator;
 import org.rainfall.Configuration;
 import org.rainfall.Operation;
 import org.rainfall.TestException;
-import org.rainfall.statistics.StatisticsObserver;
 import org.rainfall.statistics.StatisticsObserversFactory;
 import org.rainfall.statistics.Task;
 import org.rainfall.web.configuration.HttpConfig;
@@ -47,8 +46,6 @@ import java.util.Map;
 public class HttpOperation extends Operation {
   private String description;
   private String path = null;
-  private StatisticsObserver<HttpResult> httpObserver =
-      StatisticsObserversFactory.<HttpResult>getInstance().getStatisticObserver("http", HttpResult.class);
   private HttpRequest operation;
   private List<NameValuePair> queryParams = new ArrayList<NameValuePair>();
 
@@ -74,7 +71,8 @@ public class HttpOperation extends Operation {
   }
 
   @Override
-  public void exec(final Map<Class<? extends Configuration>, Configuration> configurations, final List<AssertionEvaluator> assertions) throws TestException {
+  public void exec(final StatisticsObserversFactory statisticsObserversFactory, final Map<Class<? extends Configuration>,
+      Configuration> configurations, final List<AssertionEvaluator> assertions) throws TestException {
     String url = null;
     HttpConfig httpConfig = (HttpConfig)configurations.get(HttpConfig.class);
     if (httpConfig != null) {
@@ -90,7 +88,7 @@ public class HttpOperation extends Operation {
     }
 
     final String finalUrl = url;
-    this.httpObserver.measure(new Task<HttpResult>() {
+    statisticsObserversFactory.getStatisticObserver("http", HttpResult.class).measure(new Task<HttpResult>() {
       @Override
       public HttpResult definition() throws Exception {
 
