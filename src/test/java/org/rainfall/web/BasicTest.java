@@ -54,7 +54,7 @@ public class BasicTest {
         .baseURL("https://www.google.fr");
     ConcurrencyConfig concurrency = ConcurrencyConfig.concurrencyConfig()
         .threads(4).timeout(5, MINUTES);
-    ReportingConfig reporting = ReportingConfig.reportingConfig(ReportingConfig.text(), ReportingConfig.html(HttpResult.class));
+    ReportingConfig reporting = ReportingConfig.reportingConfig(ReportingConfig.text(), ReportingConfig.html());
 
     Scenario scenario = Scenario.scenario("Google search")
         .exec(http("Recherche Crocro").get("/?").queryParam("q", "Crocro"))
