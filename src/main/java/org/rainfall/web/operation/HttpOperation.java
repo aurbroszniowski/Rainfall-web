@@ -29,6 +29,7 @@ import org.rainfall.AssertionEvaluator;
 import org.rainfall.Configuration;
 import org.rainfall.Operation;
 import org.rainfall.TestException;
+import org.rainfall.statistics.Result;
 import org.rainfall.statistics.StatisticsObserversFactory;
 import org.rainfall.statistics.Task;
 import org.rainfall.web.configuration.HttpConfig;
@@ -88,15 +89,16 @@ public class HttpOperation extends Operation {
     }
 
     final String finalUrl = url;
-    statisticsObserversFactory.getStatisticObserver("http", HttpResult.class).measure(new Task<HttpResult>() {
+    statisticsObserversFactory.getStatisticObserver("http", HttpResult.values()).measure(new Task() {
       @Override
-      public HttpResult definition() throws Exception {
+      public Result definition() throws Exception {
 
         HttpResponse response = client.execute(httpRequest(finalUrl));
+
         if (response.getStatusLine().getStatusCode() == 200)
           return HttpResult.OK;
         else
-          return HttpResult.KO;
+          return  HttpResult.valueOf("" + response.getStatusLine().getStatusCode());
       }
     });
 

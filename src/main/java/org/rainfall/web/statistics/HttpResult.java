@@ -16,10 +16,21 @@
 
 package org.rainfall.web.statistics;
 
+import org.rainfall.statistics.Result;
+
 /**
  * @author Aurelien Broszniowski
  */
 
-public enum HttpResult {
-  OK, KO
+public class HttpResult extends Result {
+  public static Result OK = new Result("OK");
+  public static Result KO = new Result("KO");
+
+  public HttpResult(final String result) {
+    super(result);
+  }
+
+  public static Result[] values() {
+    return new Result[] { OK, KO };
+  }
 }
