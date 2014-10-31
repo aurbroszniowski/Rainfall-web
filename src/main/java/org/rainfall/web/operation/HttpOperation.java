@@ -89,7 +89,8 @@ public class HttpOperation extends Operation {
     }
 
     final String finalUrl = url;
-    statisticsObserversFactory.getStatisticObserver("http", HttpResult.values()).measure(new Task() {
+    statisticsObserversFactory
+        .measure("http", HttpResult.values(), new Task() {
       @Override
       public Result definition() throws Exception {
 
