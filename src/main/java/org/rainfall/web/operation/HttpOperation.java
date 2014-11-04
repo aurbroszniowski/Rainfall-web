@@ -30,7 +30,7 @@ import org.rainfall.Configuration;
 import org.rainfall.Operation;
 import org.rainfall.TestException;
 import org.rainfall.statistics.Result;
-import org.rainfall.statistics.StatisticsObserversFactory;
+import org.rainfall.statistics.StatisticsObserversHolder;
 import org.rainfall.statistics.Task;
 import org.rainfall.web.configuration.HttpConfig;
 import org.rainfall.web.statistics.HttpResult;
@@ -72,7 +72,7 @@ public class HttpOperation extends Operation {
   }
 
   @Override
-  public void exec(final StatisticsObserversFactory statisticsObserversFactory, final Map<Class<? extends Configuration>,
+  public void exec(final StatisticsObserversHolder statisticsObserversHolder, final Map<Class<? extends Configuration>,
       Configuration> configurations, final List<AssertionEvaluator> assertions) throws TestException {
     String url = null;
     HttpConfig httpConfig = (HttpConfig)configurations.get(HttpConfig.class);
@@ -89,19 +89,19 @@ public class HttpOperation extends Operation {
     }
 
     final String finalUrl = url;
-    statisticsObserversFactory
+    statisticsObserversHolder
         .measure("http", HttpResult.values(), new Task() {
-      @Override
-      public Result definition() throws Exception {
+          @Override
+          public Result definition() throws Exception {
 
-        HttpResponse response = client.execute(httpRequest(finalUrl));
+            HttpResponse response = client.execute(httpRequest(finalUrl));
 
-        if (response.getStatusLine().getStatusCode() == 200)
-          return HttpResult.OK;
-        else
-          return  HttpResult.valueOf("" + response.getStatusLine().getStatusCode());
-      }
-    });
+            if (response.getStatusLine().getStatusCode() == 200)
+              return HttpResult.OK;
+            else
+              return HttpResult.valueOf("" + response.getStatusLine().getStatusCode());
+          }
+        });
 
     //TODO : evaluate assertions
   }
