@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package org.rainfall.web;
+package io.rainfall.web;
 
+import io.rainfall.Runner;
+import io.rainfall.Unit;
+import io.rainfall.configuration.ConcurrencyConfig;
+import io.rainfall.unit.During;
+import io.rainfall.unit.Every;
+import io.rainfall.utils.SystemTest;
+import io.rainfall.web.configuration.HttpConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.rainfall.Runner;
-import org.rainfall.Scenario;
-import org.rainfall.SyntaxException;
-import org.rainfall.configuration.ConcurrencyConfig;
-import org.rainfall.configuration.ReportingConfig;
-import org.rainfall.utils.SystemTest;
-import org.rainfall.web.configuration.HttpConfig;
-import org.rainfall.web.statistics.HttpResult;
+import io.rainfall.Scenario;
+import io.rainfall.SyntaxException;
+import io.rainfall.configuration.ReportingConfig;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.rainfall.Unit.users;
-import static org.rainfall.execution.Executions.atOnce;
-import static org.rainfall.execution.Executions.constantUsersPerSec;
-import static org.rainfall.execution.Executions.inParallel;
-import static org.rainfall.execution.Executions.nothingFor;
-import static org.rainfall.unit.TimeDivision.seconds;
-import static org.rainfall.unit.During.during;
-import static org.rainfall.unit.Every.every;
-import static org.rainfall.web.WebAssertions.isLessThan;
-import static org.rainfall.web.WebAssertions.responseTime;
-import static org.rainfall.web.WebOperations.http;
-import static org.rainfall.web.configuration.HttpConfig.httpConfig;
+import static io.rainfall.execution.Executions.atOnce;
+import static io.rainfall.execution.Executions.constantUsersPerSec;
+import static io.rainfall.execution.Executions.inParallel;
+import static io.rainfall.execution.Executions.nothingFor;
+import static io.rainfall.unit.TimeDivision.seconds;
 
 /**
  * @author Aurelien Broszniowski
@@ -50,23 +45,23 @@ public class BasicTest {
 
   @Test
   public void testBasic() throws SyntaxException {
-    HttpConfig httpConf = httpConfig()
+    HttpConfig httpConf = HttpConfig.httpConfig()
         .baseURL("https://www.google.fr");
     ConcurrencyConfig concurrency = ConcurrencyConfig.concurrencyConfig()
         .threads(4).timeout(5, MINUTES);
     ReportingConfig reporting = ReportingConfig.reportingConfig(ReportingConfig.text(), ReportingConfig.html());
 
     Scenario scenario = Scenario.scenario("Google search")
-        .exec(http("Recherche Crocro").get("/?").queryParam("q", "Crocro"))
-        .exec(http("Recherche Gatling").post("/?#q=Gatling").queryParam("q", "Gatling"))
-        .exec(http("Recherche Java").get("/?#q=Java").queryParam("q", "Java"));
+        .exec(WebOperations.http("Recherche Crocro").get("/?").queryParam("q", "Crocro"))
+        .exec(WebOperations.http("Recherche Gatling").post("/?#q=Gatling").queryParam("q", "Gatling"))
+        .exec(WebOperations.http("Recherche Java").get("/?#q=Java").queryParam("q", "Java"));
 
     Runner.setUp(scenario)
-        .executed(atOnce(5, users), nothingFor(5, seconds), atOnce(5, users),
-            constantUsersPerSec(5, during(10, seconds)),
-            inParallel(5, users, every(2, seconds), during(10, seconds)))
+        .executed(atOnce(5, Unit.users), nothingFor(5, seconds), atOnce(5, Unit.users),
+            constantUsersPerSec(5, During.during(10, seconds)),
+            inParallel(5, Unit.users, Every.every(2, seconds), During.during(10, seconds)))
         .config(httpConf, concurrency, reporting)
-        .assertion(responseTime(), isLessThan(1, seconds))
+        .assertion(WebAssertions.responseTime(), WebAssertions.isLessThan(1, seconds))
         .start();
 
 /*

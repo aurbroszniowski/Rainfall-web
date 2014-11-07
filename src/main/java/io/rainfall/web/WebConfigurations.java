@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.rainfall.web;
-
-import org.rainfall.execution.NothingFor;
-import org.rainfall.unit.TimeDivision;
+package io.rainfall.web;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class WebExecutions {
+public class WebConfigurations {
 
 }

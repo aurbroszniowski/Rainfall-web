@@ -14,18 +14,28 @@
  * limitations under the License.
  */
 
-package org.rainfall.web.assertion;
+package io.rainfall.web.configuration;
 
-import org.rainfall.Assertion;
+import io.rainfall.Configuration;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class ResponseTime extends Assertion {
-  @Override
-  public void evaluate(final Assertion expected) throws AssertionError {
-    //To change body of implemented methods use File | Settings | File Templates.
-    throw new UnsupportedOperationException();
+public class HttpConfig extends Configuration {
+
+  private String url;
+
+  public static HttpConfig httpConfig() {
+    return new HttpConfig();
+  }
+
+  public HttpConfig baseURL(final String url) {
+    this.url = url;
+    return this;
+  }
+
+  public String getUrl() {
+    return url;
   }
 }

@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package org.rainfall.web.operation;
+package io.rainfall.web.operation;
 
+import io.rainfall.AssertionEvaluator;
+import io.rainfall.Configuration;
+import io.rainfall.Operation;
+import io.rainfall.TestException;
+import io.rainfall.statistics.Result;
+import io.rainfall.statistics.Task;
+import io.rainfall.web.configuration.HttpConfig;
+import io.rainfall.web.statistics.HttpResult;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -25,15 +33,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.rainfall.AssertionEvaluator;
-import org.rainfall.Configuration;
-import org.rainfall.Operation;
-import org.rainfall.TestException;
-import org.rainfall.statistics.Result;
-import org.rainfall.statistics.StatisticsObserversHolder;
-import org.rainfall.statistics.Task;
-import org.rainfall.web.configuration.HttpConfig;
-import org.rainfall.web.statistics.HttpResult;
+import io.rainfall.statistics.StatisticsObserversHolder;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;

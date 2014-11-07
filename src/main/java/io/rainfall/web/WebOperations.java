@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package org.rainfall.web;
+package io.rainfall.web;
 
-import org.rainfall.Unit;
-import org.rainfall.web.assertion.LessThanComparator;
-import org.rainfall.web.assertion.ResponseTime;
+import io.rainfall.web.operation.HttpOperation;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class WebAssertions {
+public class WebOperations {
 
-  public static ResponseTime responseTime() {
-    return new ResponseTime();
-  }
-//TODO : use matchers ? or other assertion api? to extend?
-
-  public static LessThanComparator isLessThan(long value, Unit unit) {
-    return new LessThanComparator(value, unit);
+  public static HttpOperation http(final String description) {
+    return new HttpOperation(description);
   }
 
 }

@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-package org.rainfall.web.configuration;
+package io.rainfall.web.statistics;
 
-import org.rainfall.Configuration;
+import io.rainfall.statistics.Result;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class HttpConfig extends Configuration {
+public class HttpResult extends Result {
+  public static Result OK = new Result("OK");
+  public static Result KO = new Result("KO");
 
-  private String url;
-
-  public static HttpConfig httpConfig() {
-    return new HttpConfig();
+  public HttpResult(final String result) {
+    super(result);
   }
 
-  public HttpConfig baseURL(final String url) {
-    this.url = url;
-    return this;
-  }
-
-  public String getUrl() {
-    return url;
+  public static Result[] values() {
+    return new Result[] { OK, KO };
   }
 }

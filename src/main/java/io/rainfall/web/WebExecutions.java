@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package org.rainfall.web.statistics;
-
-import org.rainfall.statistics.Result;
+package io.rainfall.web;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class HttpResult extends Result {
-  public static Result OK = new Result("OK");
-  public static Result KO = new Result("KO");
+public class WebExecutions {
 
-  public HttpResult(final String result) {
-    super(result);
-  }
-
-  public static Result[] values() {
-    return new Result[] { OK, KO };
-  }
 }

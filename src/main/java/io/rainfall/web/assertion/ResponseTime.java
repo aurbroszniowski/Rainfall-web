@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package org.rainfall.web.assertion;
+package io.rainfall.web.assertion;
 
-import org.rainfall.Assertion;
-import org.rainfall.Unit;
+import io.rainfall.Assertion;
 
 /**
  * @author Aurelien Broszniowski
  */
 
-public class LessThanComparator extends Assertion {
-
-  private final long value;
-  private final Unit unit;
-
-  public LessThanComparator(final long value, final Unit unit) {
-    this.value = value;
-    this.unit = unit;
-  }
-
+public class ResponseTime extends Assertion {
   @Override
-  public void evaluate(final Assertion assertion) throws AssertionError {
-    //TODO : implement? or reuse existing assertion evaluators ?
+  public void evaluate(final Assertion expected) throws AssertionError {
+    //To change body of implemented methods use File | Settings | File Templates.
     throw new UnsupportedOperationException();
   }
-
 }
