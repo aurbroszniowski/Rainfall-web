@@ -80,7 +80,7 @@ public class HttpOperation extends Operation {
       url = httpConfig.getUrl();
     }
     if (url == null) {
-      throw new TestException("baseURL of org.rainfall.web.HttpConfig is missing");
+      throw new TestException("baseURL of io.rainfall.web.HttpConfig is missing");
     }
     final HttpClient client = HttpClientBuilder.create().build();
 
