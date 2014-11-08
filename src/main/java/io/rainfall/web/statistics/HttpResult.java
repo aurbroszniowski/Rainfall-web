@@ -16,21 +16,10 @@
 
 package io.rainfall.web.statistics;
 
-import io.rainfall.statistics.Result;
-
 /**
  * @author Aurelien Broszniowski
  */
 
-public class HttpResult extends Result {
-  public static Result OK = new Result("OK");
-  public static Result KO = new Result("KO");
-
-  public HttpResult(final String result) {
-    super(result);
-  }
-
-  public static Result[] values() {
-    return new Result[] { OK, KO };
-  }
+public enum HttpResult {
+  OK, KO
 }

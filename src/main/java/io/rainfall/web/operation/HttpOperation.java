@@ -20,7 +20,7 @@ import io.rainfall.AssertionEvaluator;
 import io.rainfall.Configuration;
 import io.rainfall.Operation;
 import io.rainfall.TestException;
-import io.rainfall.statistics.Result;
+import io.rainfall.statistics.StatisticsObserversHolder;
 import io.rainfall.statistics.Task;
 import io.rainfall.web.configuration.HttpConfig;
 import io.rainfall.web.statistics.HttpResult;
@@ -33,7 +33,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import io.rainfall.statistics.StatisticsObserversHolder;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -44,7 +43,7 @@ import java.util.Map;
  * @author Aurelien Broszniowski
  */
 
-public class HttpOperation extends Operation {
+public class HttpOperation extends Operation<HttpResult> {
   private String description;
   private String path = null;
   private HttpRequest operation;
@@ -72,7 +71,7 @@ public class HttpOperation extends Operation {
   }
 
   @Override
-  public void exec(final StatisticsObserversHolder statisticsObserversHolder, final Map<Class<? extends Configuration>,
+  public void exec(final StatisticsObserversHolder<HttpResult> statisticsObserversHolder, final Map<Class<? extends Configuration>,
       Configuration> configurations, final List<AssertionEvaluator> assertions) throws TestException {
     String url = null;
     HttpConfig httpConfig = (HttpConfig)configurations.get(HttpConfig.class);
@@ -90,16 +89,16 @@ public class HttpOperation extends Operation {
 
     final String finalUrl = url;
     statisticsObserversHolder
-        .measure("http", HttpResult.values(), new Task() {
+        .measure("http", HttpResult.class, new Task() {
           @Override
-          public Result definition() throws Exception {
+          public HttpResult definition() throws Exception {
 
             HttpResponse response = client.execute(httpRequest(finalUrl));
 
             if (response.getStatusLine().getStatusCode() == 200)
               return HttpResult.OK;
             else
-              return HttpResult.valueOf("" + response.getStatusLine().getStatusCode());
+              return HttpResult.KO;
           }
         });
 
@@ -109,11 +108,9 @@ public class HttpOperation extends Operation {
   private HttpRequestBase httpRequest(final String finalUrl) {
     try {
       if (HttpRequest.GET.equals(this.operation)) {
-        HttpGet request = new HttpGet(new URIBuilder(finalUrl).setParameters(this.queryParams).build());
-        return request;
+        return new HttpGet(new URIBuilder(finalUrl).setParameters(this.queryParams).build());
       } else if (HttpRequest.POST.equals(this.operation)) {
-        HttpPost request = new HttpPost(new URIBuilder(finalUrl).setParameters(this.queryParams).build());
-        return request;
+        return new HttpPost(new URIBuilder(finalUrl).setParameters(this.queryParams).build());
       }
     } catch (URISyntaxException e) {
       return null;

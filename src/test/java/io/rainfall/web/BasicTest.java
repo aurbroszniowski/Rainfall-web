@@ -17,24 +17,25 @@
 package io.rainfall.web;
 
 import io.rainfall.Runner;
+import io.rainfall.Scenario;
+import io.rainfall.SyntaxException;
 import io.rainfall.Unit;
 import io.rainfall.configuration.ConcurrencyConfig;
+import io.rainfall.configuration.ReportingConfig;
 import io.rainfall.unit.During;
 import io.rainfall.unit.Every;
 import io.rainfall.utils.SystemTest;
 import io.rainfall.web.configuration.HttpConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import io.rainfall.Scenario;
-import io.rainfall.SyntaxException;
-import io.rainfall.configuration.ReportingConfig;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static io.rainfall.execution.Executions.atOnce;
 import static io.rainfall.execution.Executions.constantUsersPerSec;
+import static io.rainfall.execution.Executions.during;
 import static io.rainfall.execution.Executions.inParallel;
 import static io.rainfall.execution.Executions.nothingFor;
 import static io.rainfall.unit.TimeDivision.seconds;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 /**
  * @author Aurelien Broszniowski
@@ -59,7 +60,8 @@ public class BasicTest {
     Runner.setUp(scenario)
         .executed(atOnce(5, Unit.users), nothingFor(5, seconds), atOnce(5, Unit.users),
             constantUsersPerSec(5, During.during(10, seconds)),
-            inParallel(5, Unit.users, Every.every(2, seconds), During.during(10, seconds)))
+            inParallel(5, Unit.users, Every.every(2, seconds), During.during(10, seconds))
+            , during(10, seconds))
         .config(httpConf, concurrency, reporting)
         .assertion(WebAssertions.responseTime(), WebAssertions.isLessThan(1, seconds))
         .start();
