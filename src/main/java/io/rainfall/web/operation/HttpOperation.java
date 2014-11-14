@@ -20,7 +20,7 @@ import io.rainfall.AssertionEvaluator;
 import io.rainfall.Configuration;
 import io.rainfall.Operation;
 import io.rainfall.TestException;
-import io.rainfall.statistics.StatisticsObserversHolder;
+import io.rainfall.statistics.StatisticsHolder;
 import io.rainfall.statistics.Task;
 import io.rainfall.web.configuration.HttpConfig;
 import io.rainfall.web.statistics.HttpResult;
@@ -43,7 +43,7 @@ import java.util.Map;
  * @author Aurelien Broszniowski
  */
 
-public class HttpOperation extends Operation<HttpResult> {
+public class HttpOperation extends Operation {
   private String description;
   private String path = null;
   private HttpRequest operation;
@@ -71,7 +71,7 @@ public class HttpOperation extends Operation<HttpResult> {
   }
 
   @Override
-  public void exec(final StatisticsObserversHolder<HttpResult> statisticsObserversHolder, final Map<Class<? extends Configuration>,
+  public void exec(final StatisticsHolder statisticsHolder, final Map<Class<? extends Configuration>,
       Configuration> configurations, final List<AssertionEvaluator> assertions) throws TestException {
     String url = null;
     HttpConfig httpConfig = (HttpConfig)configurations.get(HttpConfig.class);
@@ -88,8 +88,8 @@ public class HttpOperation extends Operation<HttpResult> {
     }
 
     final String finalUrl = url;
-    statisticsObserversHolder
-        .measure("http", HttpResult.class, new Task() {
+    statisticsHolder
+        .measure("http",  new Task() {
           @Override
           public HttpResult definition() throws Exception {
 

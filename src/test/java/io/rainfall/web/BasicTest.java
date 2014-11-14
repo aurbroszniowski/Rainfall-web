@@ -26,6 +26,7 @@ import io.rainfall.unit.During;
 import io.rainfall.unit.Every;
 import io.rainfall.utils.SystemTest;
 import io.rainfall.web.configuration.HttpConfig;
+import io.rainfall.web.statistics.HttpResult;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -50,7 +51,8 @@ public class BasicTest {
         .baseURL("https://www.google.fr");
     ConcurrencyConfig concurrency = ConcurrencyConfig.concurrencyConfig()
         .threads(4).timeout(5, MINUTES);
-    ReportingConfig reporting = ReportingConfig.reportingConfig(ReportingConfig.text(), ReportingConfig.html());
+    ReportingConfig reporting = ReportingConfig.reportingConfig(HttpResult.class,
+        ReportingConfig.text(), ReportingConfig.html());
 
     Scenario scenario = Scenario.scenario("Google search")
         .exec(WebOperations.http("Recherche Crocro").get("/?").queryParam("q", "Crocro"))
