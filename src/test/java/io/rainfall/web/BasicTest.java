@@ -22,6 +22,7 @@ import io.rainfall.SyntaxException;
 import io.rainfall.Unit;
 import io.rainfall.configuration.ConcurrencyConfig;
 import io.rainfall.configuration.ReportingConfig;
+import io.rainfall.statistics.StatisticsPeekHolder;
 import io.rainfall.unit.During;
 import io.rainfall.unit.Every;
 import io.rainfall.utils.SystemTest;
@@ -59,7 +60,7 @@ public class BasicTest {
         .exec(WebOperations.http("Recherche Gatling").post("/?#q=Gatling").queryParam("q", "Gatling"))
         .exec(WebOperations.http("Recherche Java").get("/?#q=Java").queryParam("q", "Java"));
 
-    Runner.setUp(scenario)
+      StatisticsPeekHolder finalStats = Runner.setUp(scenario)
         .executed(atOnce(5, Unit.users), nothingFor(5, seconds), atOnce(5, Unit.users),
             constantUsersPerSec(5, During.during(10, seconds)),
             inParallel(5, Unit.users, Every.every(2, seconds), During.during(10, seconds))
