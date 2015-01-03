@@ -21,10 +21,7 @@ import io.rainfall.Configuration;
 import io.rainfall.Operation;
 import io.rainfall.TestException;
 import io.rainfall.statistics.StatisticsHolder;
-import io.rainfall.statistics.Task;
 import io.rainfall.web.configuration.HttpConfig;
-import io.rainfall.web.statistics.HttpResult;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -44,6 +41,8 @@ import java.util.Map;
  */
 
 public class HttpOperation extends Operation {
+  HttpOperationFunction function = new HttpOperationFunction();
+
   private String description;
   private String path = null;
   private HttpRequest operation;
@@ -87,20 +86,7 @@ public class HttpOperation extends Operation {
       url += path;
     }
 
-    final String finalUrl = url;
-    statisticsHolder
-        .measure("http",  new Task() {
-          @Override
-          public HttpResult definition() throws Exception {
-
-            HttpResponse response = client.execute(httpRequest(finalUrl));
-
-            if (response.getStatusLine().getStatusCode() == 200)
-              return HttpResult.OK;
-            else
-              return HttpResult.KO;
-          }
-        });
+    statisticsHolder.measure("http", function.execute(client, httpRequest(url)));
 
     //TODO : evaluate assertions
   }
@@ -118,7 +104,4 @@ public class HttpOperation extends Operation {
     return null;
   }
 
-  public enum HttpRequest {
-    GET, POST
-  }
 }
