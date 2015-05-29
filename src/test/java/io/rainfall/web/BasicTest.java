@@ -19,25 +19,24 @@ package io.rainfall.web;
 import io.rainfall.Runner;
 import io.rainfall.Scenario;
 import io.rainfall.SyntaxException;
-import io.rainfall.Unit;
 import io.rainfall.configuration.ConcurrencyConfig;
 import io.rainfall.configuration.ReportingConfig;
 import io.rainfall.statistics.StatisticsPeekHolder;
-import io.rainfall.unit.During;
-import io.rainfall.unit.Every;
 import io.rainfall.utils.SystemTest;
 import io.rainfall.web.configuration.HttpConfig;
 import io.rainfall.web.statistics.HttpResult;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static io.rainfall.Unit.users;
 import static io.rainfall.configuration.ReportingConfig.html;
 import static io.rainfall.configuration.ReportingConfig.text;
-import static io.rainfall.execution.Executions.atOnce;
-import static io.rainfall.execution.Executions.constantUsersPerSec;
 import static io.rainfall.execution.Executions.during;
 import static io.rainfall.execution.Executions.inParallel;
 import static io.rainfall.execution.Executions.nothingFor;
+import static io.rainfall.execution.Executions.once;
+import static io.rainfall.unit.Every.every;
+import static io.rainfall.unit.Over.over;
 import static io.rainfall.unit.TimeDivision.seconds;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -55,17 +54,16 @@ public class BasicTest {
     ConcurrencyConfig concurrency = ConcurrencyConfig.concurrencyConfig()
         .threads(4).timeout(5, MINUTES);
     ReportingConfig reporting = ReportingConfig.report(HttpResult.class)
-        .log(text(), html())
-        .summary(text(), html());
+        .log(text(), html());
 
     Scenario scenario = Scenario.scenario("Google search")
         .exec(WebOperations.http("Search Crocro").get("/?").queryParam("q", "Crocro"))
         .exec(WebOperations.http("Search Java").get("/?#q=Java").queryParam("q", "Java"));
 
-      StatisticsPeekHolder finalStats = Runner.setUp(scenario)
-        .executed(atOnce(5, Unit.users), nothingFor(5, seconds), atOnce(5, Unit.users),
-            constantUsersPerSec(5, During.during(10, seconds)),
-            inParallel(5, Unit.users, Every.every(2, seconds), During.during(10, seconds)),
+    StatisticsPeekHolder finalStats = Runner.setUp(scenario)
+        .executed(once(5, users), nothingFor(5, seconds), once(5, users),
+            inParallel(5, users, every(1, seconds), over(10, seconds)),
+            inParallel(5, users, every(2, seconds), over(10, seconds)),
             during(10, seconds))
         .config(httpConf, concurrency, reporting)
         .assertion(WebAssertions.responseTime(), WebAssertions.isLessThan(1, seconds))

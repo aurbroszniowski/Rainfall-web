@@ -41,8 +41,6 @@ import java.util.Map;
  */
 
 public class HttpOperation extends Operation {
-  HttpOperationFunction function = new HttpOperationFunction();
-
   private String description;
   private String path = null;
   private HttpRequest operation;
@@ -86,7 +84,7 @@ public class HttpOperation extends Operation {
       url += path;
     }
 
-    statisticsHolder.measure("http", function.execute(client, httpRequest(url)));
+    statisticsHolder.measure("http", new HttpOperationFunction(client, httpRequest(url)));
 
     //TODO : evaluate assertions
   }

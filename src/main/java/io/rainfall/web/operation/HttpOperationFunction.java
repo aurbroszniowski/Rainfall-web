@@ -16,7 +16,6 @@
 
 package io.rainfall.web.operation;
 
-import io.rainfall.statistics.FunctionExecutor;
 import io.rainfall.statistics.OperationFunction;
 import io.rainfall.web.statistics.HttpResult;
 import org.apache.http.HttpResponse;
@@ -26,15 +25,14 @@ import org.apache.http.client.methods.HttpRequestBase;
 /**
  * @author Aurelien Broszniowski
  */
-public class HttpOperationFunction extends OperationFunction<HttpResult> {
+public class HttpOperationFunction implements OperationFunction<HttpResult> {
 
   private HttpClient client;
   private HttpRequestBase httpRequestBase;
 
-  public FunctionExecutor execute(HttpClient client, final HttpRequestBase httpRequestBase) {
+  public HttpOperationFunction(HttpClient client, final HttpRequestBase httpRequestBase) {
     this.client = client;
     this.httpRequestBase = httpRequestBase;
-    return functionExecutor;
   }
 
   @Override
