@@ -21,5 +21,5 @@ package io.rainfall.web.statistics;
  */
 
 public enum HttpResult {
-  OK, KO
+  OK, KO, EXCEPTION
 }

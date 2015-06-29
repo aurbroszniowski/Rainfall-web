@@ -22,6 +22,7 @@ import io.rainfall.Operation;
 import io.rainfall.TestException;
 import io.rainfall.statistics.StatisticsHolder;
 import io.rainfall.web.configuration.HttpConfig;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -31,10 +32,15 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static io.rainfall.web.statistics.HttpResult.EXCEPTION;
+import static io.rainfall.web.statistics.HttpResult.KO;
+import static io.rainfall.web.statistics.HttpResult.OK;
 
 /**
  * @author Aurelien Broszniowski
@@ -84,7 +90,18 @@ public class HttpOperation extends Operation {
       url += path;
     }
 
-    statisticsHolder.measure("http", new HttpOperationFunction(client, httpRequest(url)));
+    long start = getTimeInNs();
+    try {
+      HttpResponse response = client.execute(httpRequest(url));
+      long end = getTimeInNs();
+      if (response.getStatusLine().getStatusCode() == 200)
+        statisticsHolder.record("http", (end - start), OK);
+      else
+        statisticsHolder.record("http", (end - start), KO);
+    } catch (IOException e) {
+      long end = getTimeInNs();
+      statisticsHolder.record("http", (end - start), EXCEPTION);
+    }
 
     //TODO : evaluate assertions
   }
