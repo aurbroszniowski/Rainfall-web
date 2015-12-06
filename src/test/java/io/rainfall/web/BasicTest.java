@@ -28,7 +28,6 @@ import io.rainfall.web.statistics.HttpResult;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static io.rainfall.Unit.users;
 import static io.rainfall.configuration.ReportingConfig.html;
 import static io.rainfall.configuration.ReportingConfig.text;
 import static io.rainfall.execution.Executions.during;
@@ -36,6 +35,7 @@ import static io.rainfall.execution.Executions.inParallel;
 import static io.rainfall.execution.Executions.nothingFor;
 import static io.rainfall.execution.Executions.once;
 import static io.rainfall.unit.Every.every;
+import static io.rainfall.unit.Instance.instances;
 import static io.rainfall.unit.Over.over;
 import static io.rainfall.unit.TimeDivision.seconds;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -61,9 +61,9 @@ public class BasicTest {
         .exec(WebOperations.http("Search Java").get("/?#q=Java").queryParam("q", "Java"));
 
     StatisticsPeekHolder finalStats = Runner.setUp(scenario)
-        .executed(once(5, users), nothingFor(5, seconds), once(5, users),
-            inParallel(5, users, every(1, seconds), over(10, seconds)),
-            inParallel(5, users, every(2, seconds), over(10, seconds)),
+        .executed(once(5, instances), nothingFor(5, seconds), once(5, instances),
+            inParallel(5, instances, every(1, seconds), over(10, seconds)),
+            inParallel(5, instances, every(2, seconds), over(10, seconds)),
             during(10, seconds))
         .config(httpConf, concurrency, reporting)
         .assertion(WebAssertions.responseTime(), WebAssertions.isLessThan(1, seconds))

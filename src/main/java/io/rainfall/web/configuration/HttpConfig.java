@@ -18,6 +18,9 @@ package io.rainfall.web.configuration;
 
 import io.rainfall.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Aurelien Broszniowski
  */
@@ -37,5 +40,10 @@ public class HttpConfig extends Configuration {
 
   public String getUrl() {
     return url;
+  }
+
+  @Override
+  public List<String> getDescription() {
+    return Arrays.asList("Http URL : " + url);
   }
 }

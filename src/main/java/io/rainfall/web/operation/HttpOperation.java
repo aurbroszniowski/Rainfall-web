@@ -35,6 +35,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -106,6 +107,11 @@ public class HttpOperation extends Operation {
     //TODO : evaluate assertions
   }
 
+  @Override
+  public List<String> getDescription() {
+    return Arrays.asList("http operation (TODO: all details)");
+  }
+
   private HttpRequestBase httpRequest(final String finalUrl) {
     try {
       if (HttpRequest.GET.equals(this.operation)) {
@@ -118,5 +124,4 @@ public class HttpOperation extends Operation {
     }
     return null;
   }
-
 }
