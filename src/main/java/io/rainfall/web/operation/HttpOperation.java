@@ -47,7 +47,7 @@ import static io.rainfall.web.statistics.HttpResult.OK;
  * @author Aurelien Broszniowski
  */
 
-public class HttpOperation extends Operation {
+public class HttpOperation implements Operation {
   private String description;
   private String path = null;
   private HttpRequest operation;
@@ -91,16 +91,16 @@ public class HttpOperation extends Operation {
       url += path;
     }
 
-    long start = getTimeInNs();
+    long start = statisticsHolder.getTimeInNs();
     try {
       HttpResponse response = client.execute(httpRequest(url));
-      long end = getTimeInNs();
+      long end = statisticsHolder.getTimeInNs();
       if (response.getStatusLine().getStatusCode() == 200)
         statisticsHolder.record("http", (end - start), OK);
       else
         statisticsHolder.record("http", (end - start), KO);
     } catch (IOException e) {
-      long end = getTimeInNs();
+      long end = statisticsHolder.getTimeInNs();
       statisticsHolder.record("http", (end - start), EXCEPTION);
     }
 
