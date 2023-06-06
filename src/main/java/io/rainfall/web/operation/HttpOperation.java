@@ -22,15 +22,15 @@ import io.rainfall.Operation;
 import io.rainfall.TestException;
 import io.rainfall.statistics.StatisticsHolder;
 import io.rainfall.web.configuration.HttpConfig;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,9 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static io.rainfall.web.statistics.HttpResult.EXCEPTION;
-import static io.rainfall.web.statistics.HttpResult.KO;
-import static io.rainfall.web.statistics.HttpResult.OK;
+import static io.rainfall.web.statistics.HttpResult.*;
 
 /**
  * @author Aurelien Broszniowski
@@ -95,7 +93,7 @@ public class HttpOperation implements Operation {
     try {
       HttpResponse response = client.execute(httpRequest(url));
       long end = statisticsHolder.getTimeInNs();
-      if (response.getStatusLine().getStatusCode() == 200)
+      if (response.getCode() == 200)
         statisticsHolder.record("http", (end - start), OK);
       else
         statisticsHolder.record("http", (end - start), KO);
@@ -112,7 +110,7 @@ public class HttpOperation implements Operation {
     return Arrays.asList("http operation (TODO: all details)");
   }
 
-  private HttpRequestBase httpRequest(final String finalUrl) {
+  private HttpUriRequestBase httpRequest(final String finalUrl) {
     try {
       if (HttpRequest.GET.equals(this.operation)) {
         return new HttpGet(new URIBuilder(finalUrl).setParameters(this.queryParams).build());
